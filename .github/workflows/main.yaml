@@ -3,7 +3,7 @@ name: Deploy to Staging K8s cluster
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   deploy:
