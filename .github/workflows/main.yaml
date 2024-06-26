@@ -62,7 +62,7 @@ jobs:
       - name: Release nodejs using Helm chart
         run: |
           release_name="nodejs"
-          helm install $release_name chartmuseum/backend-apps --version 0.6.7 -f nodejs-values.yaml
+          helm install $release_name chartmuseum/backend-apps -f nodejs-values.yaml
             
           
       - name: Print Current Working Directory
