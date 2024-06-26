@@ -3,7 +3,7 @@ name: Deploy to Staging K8s cluster
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   deploy:
@@ -11,31 +11,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: us-east-1
-
-      - name: Build, tag, and push image to Amazon Harbor
-        id: build-image
-        env:
-          HARBOR_REGISTRY: harbor.staging.ignite.dev
-          IMAGE_TAG: ${{ github.sha }}
-          HARBOR_REPOSITORY: integration-ms
-          USERNAME: ${{ secrets.STAGING_HARBOR_USERNAME }}
-          PASSWORD: ${{ secrets.STAGING_HARBOR_PASSWORD }}
-        run: |
-          # Build a docker container
-          set -x
-          ls -la
-          docker login harbor.staging.ignite.dev --username $USERNAME --password $PASSWORD
-          docker build -t $HARBOR_REPOSITORY:$IMAGE_TAG  -f Dockerfile .  --build-arg DATABASE_URL=${{secrets.DATABASE_URL}}
-          docker tag $HARBOR_REPOSITORY:$IMAGE_TAG harbor.staging.ignite.dev/internal-services/$HARBOR_REPOSITORY:$IMAGE_TAG
-          docker push harbor.staging.ignite.dev/internal-services/$HARBOR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::harbor.staging.ignite.dev/internal-services/$HARBOR_REPOSITORY:$IMAGE_TAG"
 
       - name: Install and configure kubectl aws-iam-authenticator
         run: |
